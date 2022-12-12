@@ -2,6 +2,7 @@
 
 """Constants for all notebooks in <project name>."""
 
+
 # Config files (in order)
 CONFIG = "config"
 CONFIG_FILES = [

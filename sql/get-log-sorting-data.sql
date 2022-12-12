@@ -1,6 +1,6 @@
 with
   log_data as (
-	select
+    select
       datepart(year, cast(ScanningDateTime as date)) as [year],
       datepart(week, cast(ScanningDateTime as date)) as [week],
       Species as [species],

@@ -4,3 +4,8 @@ dwh:
   password: ${MS_PWD}
   database: SODRA_Common_EDW_DWH
 
+mapptvr:
+  server: common-vm001.sodra.com
+  user: robny
+  password: ${MS_PWD}
+  database: MAPPTVR
