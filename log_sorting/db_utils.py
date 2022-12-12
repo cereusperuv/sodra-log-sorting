@@ -5,25 +5,9 @@
 from pathlib import Path
 
 import pymssql
-import snowflake.connector as sfc
 from box import Box
 
 from constants import SQL_EXTENSION
-
-
-def create_snowflake_connection(
-    config: Box,
-) -> sfc.connection.SnowflakeConnection:
-    """Create a connection to Snowflake.
-    
-    Note: Assumes 'config' has a 'snowflake' sub-config.
-
-    :param config: Configuration for project.
-    :type config: Box
-    :return: Snowflake connection.
-    :type return: snowflake.connector.connection.SnowflakeConnection
-    """
-    return sfc.connect(**config.snowflake)
 
 
 def create_azure_sql_connection(
