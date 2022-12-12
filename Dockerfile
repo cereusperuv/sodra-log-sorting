@@ -10,11 +10,16 @@ RUN apt-get update -y && \
 
 WORKDIR /datascience
 
-ADD ./start-jupyter.sh .
+ADD ./README.md .
 ADD ./requirements.txt .
+ADD ./setup.py .
+ADD ./start-jupyter.sh .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+RUN pip install -e .[dev]
+RUN rm -f README.md
 RUN rm -f requirements.txt
+RUN rm -f setup.py
 
 EXPOSE 8888
 
