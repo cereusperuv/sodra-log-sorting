@@ -1,0 +1,11 @@
+matplotlib
+notebook
+numpy==1.21.*
+openpyxl
+pandas==1.3.*
+plotly
+pyarrow
+pymssql==2.2.7
+python-box==5.3.*
+seaborn
+xlrd==2.0.1

@@ -1,0 +1,17 @@
+# Data folder
+data/*
+!data/README.md
+*.csv
+*.parquet
+*.xlsx
+
+# Secrets
+env.list
+
+# Byte-compiled / optimized / DLL files.
+__pycache__/
+
+# Jupyter Notebook.
+.ipynb_checkpoints
+.Trash*
+notebooks/*.log

@@ -1,0 +1,6 @@
+dwh:
+  server: azu-bi-vm006.sodra.com
+  user: robny
+  password: ${MS_PWD}
+  database: SODRA_Common_EDW_DWH
+
