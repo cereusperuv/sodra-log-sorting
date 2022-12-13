@@ -1,6 +1,7 @@
 # Data folder
 data/*
 !data/README.md
+!data/__init__.py
 *.csv
 *.parquet
 *.xlsx
