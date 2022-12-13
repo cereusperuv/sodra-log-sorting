@@ -55,8 +55,8 @@ with
           [sorting_length] < 486
         ) then '476-485'
         when (
-          [sorting_length] >= 4860 and
-          [sorting_length] < 4960
+          [sorting_length] >= 486 and
+          [sorting_length] < 496
         ) then '486-495'
         when (
           [sorting_length] >= 496 and
