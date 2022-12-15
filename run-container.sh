@@ -10,5 +10,5 @@ docker container run \
 -v $(pwd)/log_sorting:/datascience/log_sorting \
 -v $(pwd)/notebooks:/datascience/notebooks \
 -v $(pwd)/sql:/datascience/sql \
---env-file ./env.list \
+--env-file ../env.list \
 -it local/$image_name bash
