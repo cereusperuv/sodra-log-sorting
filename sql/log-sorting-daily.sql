@@ -1,9 +1,9 @@
 with
   log_data as (
     select
-      datepart(year, cast(ScanningDateTime as date)) as [year],
-      datepart(week, cast(ScanningDateTime as date)) as [week],
+      cast(ScanningDateTime as date) as [date],
       [Species] as [species],
+      [LotId] as [lot_id],
       [LogId] as [log_id],
       cast([SortingLength] as int) as [sorting_length],
       cast([SortingDiameterUnderBark] as int) as [sorting_diameter_under_bark],
@@ -11,16 +11,17 @@ with
     from
       MAPPTVR.dbo.TimberLogInTvr2
     where
-      cast(ScanningDateTime as date) >= '{{ start_date }}' {% if end_date -%} 
+      [Species] = {{ species }} and
+      cast([ScanningDateTime] as date) >= '{{ start_date }}' {% if end_date -%} 
       and
-      cast(ScanningDateTime as date) <= '{{ end_date }}'
+      cast([ScanningDateTime] as date) <= '{{ end_date }}'
       {%- endif %}
   ),
   aggregated_by_diameter_and_length as (
     select
-      [year],
-      [week],
+      [date],
       [species],
+      [lot_id],
       [sorting_length],
       [sorting_diameter_under_bark],
       count(distinct [log_id]) as [logs],
@@ -28,43 +29,42 @@ with
     from
       log_data
     group by
-      [year],
-      [week],
+      [date],
       [species],
+      [lot_id],
       [sorting_length],
       [sorting_diameter_under_bark]
   ),
   {%- for group in diameter_groups %}
-  diameter_group_{{ group["diameter_interval"].replace("-", "_") }} as (
+  diameter_group_{{ group["diameter_interval"][0] }} as (
     select
-      [year],
-      [week],
+      [date],
       [species],
-      '{{ group["diameter_interval"] }}' as [diameter_group],
+      [lot_id],
+      '{{ group["diameter_group"] }}' as [diameter_group],
       case
-        {% for l in group["length_intervals"] -%}
+        {% for l in group["length_interval"] -%}
         when (
-          [sorting_length] >= {{ l.split("-")[0] }} and
-          [sorting_length] < {{ l.split("-")[1]|int + 1 }}
-        ) then '{{ l }}'
+          [sorting_length] >= {{ l[0] }} {%- if not loop.last %} and
+          [sorting_length] < {{ l[1] }} {%- endif %}
+        ) then cast({{ l[0] }}/10.0 as decimal(3, 1))
         {% endfor -%}
-        else '-'
-      end as [length_interval],
+      end as [length],
       [logs],
       [volume_m3fub]
     from
       aggregated_by_diameter_and_length
     where
-      [sorting_diameter_under_bark] {% if group["inclusive"] in ["left", "both"] -%}
-      >= {%- else -%} > {%- endif %} {{ group["diameter_interval"].split("-")[0] }} and
-      [sorting_diameter_under_bark] {% if group["inclusive"] in ["right", "both"] -%}
-      <= {%- else -%} < {%- endif %} {{ group["diameter_interval"].split("-")[1] }}
+      [sorting_diameter_under_bark] >= {{ group["diameter_interval"][0] }}
+      {%- if not loop.last %} and
+      [sorting_diameter_under_bark] < {{ group["diameter_interval"][1] }}
+      {%- endif %}
   ),
   {%- endfor %}
   combined as (
     {% for group in diameter_groups -%}
     select *
-    from diameter_group_{{ group["diameter_interval"].replace("-", "_") }}
+    from diameter_group_{{ group["diameter_interval"][0] }}
     {%- if not loop.last %}
     union all
     {% endif -%}
@@ -72,27 +72,27 @@ with
   ),
   aggregated as (
     select
-      [year],
-      [week],
+      [date],
       [species],
+      [lot_id],
       [diameter_group],
-      [length_interval],
+      [length],
       sum([logs]) as [logs],
       sum([volume_m3fub]) as [volume_m3fub]
     from
       combined
     group by
-      [year],
-      [week],
+      [date],
       [species],
+      [lot_id],
       [diameter_group],
-      [length_interval]
+      [length]
   )
 select *
 from aggregated
 order by
-  [year],
-  [week],
+  [date],
   [species],
+  [lot_id],
   [diameter_group],
-  [length_interval]
+  [length]

@@ -4,10 +4,11 @@
 
 from pathlib import Path
 
+import pandas as pd
 import pymssql
 from box import Box
 
-from constants import SQL_EXTENSION
+from log_sorting.constants import SQL_EXTENSION
 
 
 def create_azure_sql_connection(
@@ -57,4 +58,27 @@ def load_sql_query(
         query = f.read()
     
     return query
+
+
+def read_to_pandas(
+    connection_config: Box,
+    sql_query: str,
+) -> pd.DataFrame:
+    """Read data to pandas dataframe via SQL query.
+
+    :param connection_config: Connection configuration.
+    :type connection_config: Box
+    :param sql_query: SQL query.
+    :type sql_query: str
+    :return: Result from SQL query.
+    :rtype: pd.DataFrame
+    """
+    with create_azure_sql_connection(connection_config) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql_query)
+        columns = [desc[0] for desc in cursor.description]
+        data = cursor.fetchall()
+        df = pd.DataFrame(data, columns=columns)
+        cursor.close()
     
+    return df

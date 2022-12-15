@@ -1,11 +1,22 @@
-dwh:
-  server: azu-bi-vm006.sodra.com
-  user: robny
-  password: ${MS_PWD}
-  database: SODRA_Common_EDW_DWH
+database:
+  dwh:
+    server: azu-bi-vm006.sodra.com
+    user: robny
+    password: ${MS_PWD}
+    database: SODRA_Common_EDW_DWH
 
-mapptvr:
-  server: common-vm001.sodra.com
-  user: robny
-  password: ${MS_PWD}
-  database: MAPPTVR
+  mapptvr:
+    server: common-vm001.sodra.com
+    user: robny
+    password: ${MS_PWD}
+    database: MAPPTVR
+
+sql:
+  base_query: log-sorting-daily
+  species: 2
+  start_date: 2022-01-01
+  end_date:
+
+file_names:
+  red_sheet: red_sheet_värö_spruce_20221214
+  output: varo_log_sorting_20221215

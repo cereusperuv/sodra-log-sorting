@@ -10,7 +10,7 @@ from typing import Dict, List
 
 from box import Box
 
-from constants import YAML_EXTENSION
+from log_sorting.constants import YAML_EXTENSION
 
 
 def _resolve_env_vars(dictionary: dict) -> None:
