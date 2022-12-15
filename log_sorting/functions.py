@@ -170,13 +170,6 @@ def postprocess_log_sorting_data(
         .drop_duplicates()
     )
     diameter_groups_lengths[CROSS_JOIN_COL] = 0
-    sort_cols = [
-        SPECIES_COL,
-        DATE_COL,
-        LOT_ID_COL,
-        DIAMETER_GROUP_COL,
-        LENGTH_COL,
-    ]
     base_df = (
         species_dates_lot_ids
         .merge(
@@ -185,10 +178,16 @@ def postprocess_log_sorting_data(
             how="outer",
             validate="m:m",
         )
-        .sort_values(sort_cols)
         .drop(columns=[CROSS_JOIN_COL])
     )
     # Merge base date with sorting & red sheet data
+    sort_cols = [
+        SPECIES_COL,
+        DATE_COL,
+        LOT_ID_COL,
+        DIAMETER_GROUP_COL,
+        LENGTH_COL,
+    ]
     df = (
         base_df
         .merge(
@@ -214,6 +213,7 @@ def postprocess_log_sorting_data(
             validate="m:1",
         )
         .fillna(0)
+        .sort_values(sort_cols)
     )
     
     return df
